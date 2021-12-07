@@ -15,123 +15,81 @@
     <div class="container">
         <div class="card" id="main">
             <article class="panel is-primary">
-                <p class="panel-heading brand-bg has-text-centered">
-                    <i class="fas fa-mobile-alt mx-2"></i>Phone Book
-                </p>
-                <p class="panel-tabs">
-                  <a class="is-active">All</a>
-                  <a>Faverate</a>
-                </p>
-                <div class="panel-block">
-                  <p class="control has-icons-left">
-                    <input class="input wrap-input100" type="text" placeholder="Search">
-                    <span class="icon is-left">
-                      <i class="fas fa-search" aria-hidden="true"></i>
-                    </span>
-                  </p>
+                <div class="test">
+                    <p class="panel-heading brand-bg has-text-centered">
+                        <i class="fas fa-mobile-alt mx-2"></i>Phone Book
+                    </p>
+                    <p class="panel-tabs">
+                      <a class="is-active">All</a>
+                      <a>Faverate</a>
+                    </p>
+                    <div class="panel-block">
+                      <p class="control has-icons-left">
+                        <input class="input wrap-input100" style="width: 90%; margin-right: 0.5rem;" type="text" placeholder="Search">
+                        <span class="icon is-left">
+                          <i class="fas fa-search" aria-hidden="true"></i>
+                        </span>
+                        <button class="add-contact-info-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                      </p>
+                    </div>
                 </div>
+                <!-- Start Save Contact Info form view -->
+                <div class="card" id="save-info-view" style="width:18rem; margin: auto;" hidden>
+                    <form id="add-contact-form">
+                        <div class="card-content">
+                            <a class="close-btn">X</a>
+                            <div class="media-content">
+                                <p class="title is-5"><input class="input is-small" id="full-name" type="text" placeholder="Full Name"></p>
+                                <p class="subtitle">
+                                    <span>
+                                        <input class="input is-small" type="text" id="phone-number" placeholder="Phone Number">
+                                    </span>
+                                    <br>
+                                    <span>
+                                        <input class="input is-small" type="email" id="email-address" placeholder="Email Address">
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                        <button type="submit" class="card-footer-item">
+                            <i class="fas fa-save fa-gradient"></i> Save
+                        </button>
+                        </footer>
+                    </form>
+                </div>
+                <!-- End Save Contact Info form view -->
                 <!-- Start Contact Info -->
-                <div class="card" id="contact-info">
-                    <div class="card-content">
-                        <div class="media-content">
-                            <p class="title is-5">John Smith</p>
-                            <p class="subtitle">
-                                <span>
-                                    <i class="fas fa-mobile-alt mx-2"></i>01740652266
-                                </span>
-                                <br>
-                                <span>
-                                    <i class="fas fa-envelope-square mx-2"></i>ahanafislam@gmail.com
-                                </span>
-                            </p>
+                <div class="display-info columns is-multiline is-desktop">
+                </div>
+                <!-- End Contact Info -->
+                  <!-- Start Contact Info Update View -->
+                <div class="card" id="update-info-view" hidden>
+                    <form id="update-contact-form">
+                        <div class="card-content">
+                            <div class="media-content">
+                                <p class="title is-5"><input class="input is-small" type="text" value="Md Ahanaf Islam"></p>
+                                <p class="subtitle">
+                                    <span>
+                                        <input class="input is-small" type="text" value="01740652266">
+                                    </span>
+                                    <br>
+                                    <span>
+                                        <input class="input is-small" type="email" value="ahanafislam@gmail.com">
+                                    </span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                      <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
-                    </footer>
-                  </div>
-                  <!-- End Contact Info -->
-                  <div class="card" id="contact-info">
-                    <div class="card-content">
-                        <div class="media-content">
-                            <p class="title is-5">John Smith</p>
-                            <p class="subtitle">
-                                <span>
-                                    <i class="fas fa-mobile-alt mx-2"></i>01740652266
-                                </span>
-                                <br>
-                                <span>
-                                    <i class="fas fa-envelope-square mx-2"></i>ahanafislam@gmail.com
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                      <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
-                    </footer>
-                  </div>
-                  <div class="card" id="contact-info">
-                    <div class="card-content">
-                        <div class="media-content">
-                            <p class="title is-5">John Smith</p>
-                            <p class="subtitle">
-                                <span>
-                                    <i class="fas fa-mobile-alt mx-2"></i>01740652266
-                                </span>
-                                <br>
-                                <span>
-                                    <i class="fas fa-envelope-square mx-2"></i>ahanafislam@gmail.com
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                      <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
-                    </footer>
-                  </div>
-                  <div class="card" id="contact-info">
-                    <div class="card-content">
-                        <div class="media-content">
-                            <p class="title is-5">John Smith</p>
-                            <p class="subtitle">
-                                <span>
-                                    <i class="fas fa-mobile-alt mx-2"></i>01740652266
-                                </span>
-                                <br>
-                                <span>
-                                    <i class="fas fa-envelope-square mx-2"></i>ahanafislam@gmail.com
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                      <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
-                    </footer>
-                  </div>
-                  <div class="card" id="contact-info">
-                    <div class="card-content">
-                        <div class="media-content">
-                            <p class="title is-5">John Smith</p>
-                            <p class="subtitle">
-                                <span>
-                                    <i class="fas fa-mobile-alt mx-2"></i>01740652266
-                                </span>
-                                <br>
-                                <span>
-                                    <i class="fas fa-envelope-square mx-2"></i>ahanafislam@gmail.com
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                      <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
-                    </footer>
-                  </div>
+                        <footer class="card-footer">
+                            <button type="submit" class="card-footer-item">
+                                <i class="fas fa-save fa-gradient"></i> Save
+                            </button>
+                        </footer>
+                    </form>
+                </div>
+                  <!-- End Contact Info Update View -->
               </article>
         </div>
     </div>
