@@ -15,7 +15,7 @@
     <div class="container">
         <div class="card" id="main">
             <article class="panel is-primary">
-                <div class="test">
+                <div class="nav">
                     <p class="panel-heading brand-bg has-text-centered">
                         <i class="fas fa-mobile-alt mx-2"></i>Phone Book
                     </p>
@@ -35,11 +35,13 @@
                       </p>
                     </div>
                 </div>
-                <!-- Start Save Contact Info form view -->
-                <div class="card" id="save-info-view" style="width:18rem; margin: auto;" hidden>
+                <div class="card message is-small" id="save-info-view" hidden>
+                    <div class="message-header brand-bg">
+                        <p><i class="fas fa-save mx-2"></i>Save Phone Number</p>
+                        <button class="close-btn delete is-small" aria-label="delete"></button>
+                      </div>
                     <form id="add-contact-form">
                         <div class="card-content">
-                            <a class="close-btn">X</a>
                             <div class="media-content">
                                 <p class="title is-5"><input class="input is-small" id="full-name" type="text" placeholder="Full Name"></p>
                                 <p class="subtitle">
@@ -54,9 +56,9 @@
                             </div>
                         </div>
                         <footer class="card-footer">
-                        <button type="submit" class="card-footer-item">
-                            <i class="fas fa-save fa-gradient"></i> Save
-                        </button>
+                            <button type="submit" class="card-footer-item">
+                                <i class="fas fa-save fa-gradient mx-1"></i> Save
+                            </button>
                         </footer>
                     </form>
                 </div>

@@ -2,6 +2,7 @@ const addContactBtn = document.querySelector('.add-contact-info-btn');
 const addContactForm = document.querySelector('#add-contact-form');
 const saveInfoView = document.querySelector('#save-info-view');
 const closeBtn = document.querySelector('.close-btn');
+const contactList = document.querySelector('.display-info');
 
 
 class PhoneBook{
@@ -35,19 +36,56 @@ class PhoneBookUI{
                     </div>
                 </div>
                 <footer class="card-footer">
-                    <a href="#" class="card-footer-item"><i class="fas fa-edit fa-gradient"></i></a>
-                    <a href="#" class="card-footer-item"><i class="fas fa-trash-alt fa-gradient"></i></a>
+                    <a href="#" class="card-footer-item edit"><i class="fas fa-edit fa-gradient"></i></a>
+                    <a href="#" class="card-footer-item delate"><i class="fas fa-trash-alt fa-gradient"></i></a>
                 </footer>
             </div>
         `;
 
         displayInfoUI.appendChild(div);
     }
+
+    static clearFields(){
+        document.querySelector('#full-name').value = '';
+        document.querySelector('#phone-number').value = '';
+        document.querySelector('#email-address').value = '';
+    }
+
+    // Display Message on the screen
+    static showMessage(message, className){
+        const article = document.createElement('article');
+        const div = document.createElement('div');
+        const text = document.createTextNode(message);
+
+        // Get parent Element
+        const panel = document.querySelector('.panel');
+
+        article.classList = `message meassage-alert ${className} is-small`;
+        div.classList = `message-body`;
+        div.appendChild(text);
+        article.appendChild(div);
+
+        panel.insertBefore(article,saveInfoView);
+
+        // Remove Aleart After 3 sec
+        setTimeout(() => {
+            document.querySelector('.meassage-alert').remove()
+        }, 3000);
+    }
+    // Remove Contact From UI
+    static getTargetContactUI(element){
+        if(element.classList.contains('fa-trash-alt')){
+            console.log(element);
+        }
+        else if(element.classList.contains('fa-edit')){
+            console.log(element);
+        }
+    }
 }
 
 // Close Button Event Listener
 closeBtn.addEventListener('click', (e) => {
-    e.target.parentElement.parentElement.parentElement.toggleAttribute('hidden');
+    e.target.parentElement.parentElement.toggleAttribute('hidden');
 });
 
 // Show or Hide addContactForm Event Listener
@@ -55,22 +93,34 @@ addContactBtn.addEventListener('click',() => {
     saveInfoView.toggleAttribute('hidden');
 });
 
-addContactForm.addEventListener('submit', () => {
-
-});
-
 // Save Contact Information Event Listener
 addContactForm.addEventListener('submit',(e) => {
+    e.preventDefault();
     const name = document.querySelector('#full-name').value;
     const phone = document.querySelector('#phone-number').value;
     const email = document.querySelector('#email-address').value;
-
     // Instantiate PhoneBook
     const phoneBook = new PhoneBook(name, phone, email);
-    // Instatiate PhoneBookUI Class
-    PhoneBookUI.saveContactInfoUI(phoneBook);
+    
+    // Validation
+    if(name === '' || phone === ''){
+        // Call Show Message Method
+        PhoneBookUI.showMessage('Your must have to fill phone number and name','is-danger');
+    }else{
+        // Instatiate PhoneBookUI Class
+        PhoneBookUI.saveContactInfoUI(phoneBook);
+        PhoneBookUI.clearFields();
+        // Hide 'Save Contact UI' Form After succesfully submit
+        if(e.target.id ==='add-contact-form'){
+            e.target.parentElement.toggleAttribute('hidden');
+        }
+        // Call Show Message Method
+        PhoneBookUI.showMessage('Phone number has been saved!','is-primary');
+    }
+    console.log(e.target);
     console.table(phoneBook);
-    // e.preventDefault();
 });
 
-
+contactList.addEventListener('click', (e) => {
+    PhoneBookUI.getTargetContactUI(e.target);
+});
