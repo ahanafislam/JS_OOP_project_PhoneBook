@@ -95,7 +95,6 @@ addContactBtn.addEventListener('click',() => {
 
 // Save Contact Information Event Listener
 addContactForm.addEventListener('submit',(e) => {
-    e.preventDefault();
     const name = document.querySelector('#full-name').value;
     const phone = document.querySelector('#phone-number').value;
     const email = document.querySelector('#email-address').value;
@@ -116,6 +115,7 @@ addContactForm.addEventListener('submit',(e) => {
         }
         // Call Show Message Method
         PhoneBookUI.showMessage('Phone number has been saved!','is-primary');
+        e.preventDefault();
     }
     console.log(e.target);
     console.table(phoneBook);
