@@ -72,16 +72,53 @@ class PhoneBookUI{
             document.querySelector('.meassage-alert').remove()
         }, 3000);
     }
-    // Remove Contact From UI
+    // Get targer from display-info UI
     static getTargetContactUI(element){
+        // Remove This Contact from ui
         if(element.classList.contains('fa-trash-alt')){
-            console.log(element);
+            element.parentElement.parentElement.parentElement.parentElement.remove();
         }
         else if(element.classList.contains('fa-edit')){
             console.log(element);
         }
     }
 }
+
+// Save Contact Info in local store
+class Store{
+    // Get Item From Local Store
+    static getPhoneBook(){
+        let phoneBook;
+        if(localStorage.getItem('phoneBook') === null){
+            phoneBook = [];
+        }else{
+            phoneBook = JSON.parse(localStorage.getItem('phoneBook'));
+        }
+
+        return phoneBook;
+    }
+
+    // Display PhoneBook List In UI
+    static displayPhoneBook(){
+        let phoneBook = Store.getPhoneBook();
+
+        phoneBook.forEach((val) => {
+            PhoneBookUI.saveContactInfoUI(val);
+        });
+    }
+
+    // Save Contact Info in local Store
+    static saveContactLocalStore(contactInfo){
+        let phoneBook = Store.getPhoneBook();
+
+        phoneBook.push(contactInfo);
+
+        localStorage.setItem('phoneBook', JSON.stringify(phoneBook));        
+    }
+}
+
+// Show Contact List When Page Is load in Screen
+document.addEventListener('DOMContentLoaded', Store.displayPhoneBook());
 
 // Close Button Event Listener
 closeBtn.addEventListener('click', (e) => {
@@ -108,6 +145,7 @@ addContactForm.addEventListener('submit',(e) => {
     }else{
         // Instatiate PhoneBookUI Class
         PhoneBookUI.saveContactInfoUI(phoneBook);
+        Store.saveContactLocalStore(phoneBook);
         PhoneBookUI.clearFields();
         // Hide 'Save Contact UI' Form After succesfully submit
         if(e.target.id ==='add-contact-form'){
@@ -115,12 +153,14 @@ addContactForm.addEventListener('submit',(e) => {
         }
         // Call Show Message Method
         PhoneBookUI.showMessage('Phone number has been saved!','is-primary');
-        e.preventDefault();
     }
+    e.preventDefault();
     console.log(e.target);
     console.table(phoneBook);
 });
 
+// Delate Contact From Contact List
 contactList.addEventListener('click', (e) => {
+    // Remove From UI
     PhoneBookUI.getTargetContactUI(e.target);
 });
