@@ -74,9 +74,18 @@ class PhoneBookUI{
     }
     // Get targer from display-info UI
     static getTargetContactUI(element){
-        // Remove This Contact from ui
+        // Delate Contact Info
         if(element.classList.contains('fa-trash-alt')){
+            // Remove Contact Info from UI
             element.parentElement.parentElement.parentElement.parentElement.remove();
+            // Delate Contact Info From Local Store
+            const textString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].textContent;
+            const text = textString.replace(/\s+/g, ''); // Remove All White Space From String
+            Store.delateFromLocalStore(text);
+            // Display Message
+            PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
+
+            //console.log(text);
         }
         else if(element.classList.contains('fa-edit')){
             console.log(element);
@@ -114,6 +123,19 @@ class Store{
         phoneBook.push(contactInfo);
 
         localStorage.setItem('phoneBook', JSON.stringify(phoneBook));        
+    }
+
+    // Delate ContactInfo From Local Store
+    static delateFromLocalStore(phoneNumber){
+        let phoneBook = Store.getPhoneBook();
+
+        phoneBook.forEach((val, index) => {
+            if(String(val.phone) === String(phoneNumber)){
+                phoneBook.splice(index,1);
+            }
+        });
+
+        localStorage.setItem('phoneBook', JSON.stringify(phoneBook));  
     }
 }
 
