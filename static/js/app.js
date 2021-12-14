@@ -3,6 +3,7 @@ const addContactForm = document.querySelector('#add-contact-form');
 const saveInfoView = document.querySelector('#save-info-view');
 const closeBtn = document.querySelector('.close-btn');
 const contactList = document.querySelector('.display-info');
+const displayInfoUI = document.querySelector('.display-info');
 
 
 class PhoneBook{
@@ -15,7 +16,6 @@ class PhoneBook{
 
 class PhoneBookUI{
     static saveContactInfoUI(phoneBook){
-        const displayInfoUI = document.querySelector('.display-info');
         const div = document.createElement('div');
 
         div.classList = 'column is-3';
@@ -74,22 +74,93 @@ class PhoneBookUI{
     }
     // Get targer from display-info UI
     static getTargetContactUI(element){
-        // Delate Contact Info
-        if(element.classList.contains('fa-trash-alt')){
-            // Remove Contact Info from UI
-            element.parentElement.parentElement.parentElement.parentElement.remove();
-            // Delate Contact Info From Local Store
-            const textString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].textContent;
-            const text = textString.replace(/\s+/g, ''); // Remove All White Space From String
-            Store.delateFromLocalStore(text);
-            // Display Message
-            PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
+        try{
+            // Get Name, Phone, email
+            const phoneString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
+            const emailString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
+            const name = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].textContent;// GEt Full Name From Targeted Contact Info
 
-            //console.log(text);
+            // Remove All White Space From String
+            const removeSpace = (text) => text.replace(/\s+/g, '');
+
+            const phoneNumber = removeSpace(phoneString);
+            const emailAddress = removeSpace(emailString);
+
+            // Delate Contact Info
+            if(element.classList.contains('fa-trash-alt')){
+                // Remove Contact Info from UI
+                element.parentElement.parentElement.parentElement.parentElement.remove();
+                // Delate Contact Info From Local Store
+                Store.delateFromLocalStore(phoneNumber);
+                // Display Message
+                PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
+            }
+            // Update Contact Info From Contact List
+            else if(element.classList.contains('fa-edit')){
+                const textObj = new PhoneBook(name, phoneNumber, emailAddress);
+                // Call mathod for update Contact info
+                PhoneBookUI.updatePhoneBookUI(element, textObj);
+            }
         }
-        else if(element.classList.contains('fa-edit')){
-            console.log(element);
+
+        // Do nothing
+        catch{
+            //console.log(error);
         }
+    }
+
+    // Update Contact Info From Contact List
+    static updatePhoneBookUI(element, textObj){
+        // Get Element Column of Targeted Phone Number
+        const phoneBookColumn = element.parentElement.parentElement.parentElement.parentElement;
+
+        // Hide Targeted Contact Info View and show update view
+        phoneBookColumn.childNodes[1].toggleAttribute('hidden');
+        displayInfoUI.childNodes.forEach((e) => {
+            e.childNodes[1] !== undefined ? e.childNodes[1].classList.toggle('display-info-disabled'): '';
+        });
+        phoneBookColumn.innerHTML += `
+            <div class="card message is-small" id="update-info-view">
+                <div class="message-header brand-bg">
+                    <p><i class="fas fa-edit mx-2"></i>Edit Contact Info</p>
+                    <button class="cancel-btn delete is-small" aria-label="delete"></button>
+                </div>
+                <form id="add-contact-form">
+                    <div class="card-content">
+                        <div class="media-content">
+                            <p class="title is-5"><input class="input is-small" id="full-name-update" type="text" value="${textObj.name}"></p>
+                            <p class="subtitle">
+                                <span>
+                                    <input class="input is-small" id="phone-number-update"  type="text" value="${textObj.phone}">
+                                </span>
+                                <br>
+                                <span>
+                                    <input class="input is-small" id="email-address-update" type="email" value="${textObj.email}">
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <button type="submit" class="card-footer-item">
+                            <i class="fas fa-save fa-gradient mx-1"></i> Update
+                        </button>
+                    </footer>
+                </form>
+            </div>
+        `;
+
+        // For Close Edit Contact Info Form
+        const cancelBtn = document.querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', (e) => {
+            e.target.parentElement.parentElement.remove();
+            phoneBookColumn.childNodes[1].toggleAttribute('hidden');
+            displayInfoUI.childNodes.forEach((e) => {
+                e.childNodes[1] !== undefined ? e.childNodes[1].classList.toggle('display-info-disabled'): '';
+                console.log(e.childNodes[1]);
+            });
+        })
+        //console.log(phoneBookColumn);
+        console.table(textObj);
     }
 }
 
@@ -183,6 +254,6 @@ addContactForm.addEventListener('submit',(e) => {
 
 // Delate Contact From Contact List
 contactList.addEventListener('click', (e) => {
-    // Remove From UI
+    // Remove From UI And Local Store Or Update
     PhoneBookUI.getTargetContactUI(e.target);
 });

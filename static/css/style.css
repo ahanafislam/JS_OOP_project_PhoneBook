@@ -8,10 +8,15 @@ body{
 }
 
 .container{
-    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* For Disable Contact List When Update Window Display */
+.display-info-disabled{
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 #main{
@@ -20,7 +25,7 @@ body{
 }
 
 .panel{
-    min-height: 25rem;
+    min-height: 100vh;
 }
 
 .is-3{
@@ -39,7 +44,7 @@ body{
     padding: none;
 }
 
-#save-info-view{
+#save-info-view, #update-info-view{
     width:18rem;
     margin: auto;
     background-color: white;
@@ -78,7 +83,7 @@ input:focus{
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
 }
-.fa-trash-alt, .fa-edit{
+.fa-trash-alt, footer .fa-edit{
     padding: 0.75rem 3.1rem;
     cursor: pointer;
 }
