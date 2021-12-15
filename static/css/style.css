@@ -23,6 +23,23 @@ body{
     display: none;
 }
 
+.fa-star{
+    color: #fff;
+    float: right;
+    /* Make Text Border */
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: orange;
+    cursor: pointer;
+}
+
+.fa-star:hover{
+    font-size: 110%;;
+}
+
+.favorite{
+    color: orange;
+}
+
 #main{
     min-width: 80%;
     border-radius: 7px;

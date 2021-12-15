@@ -5,6 +5,7 @@ const closeBtn = document.querySelector('.close-btn');
 const contactList = document.querySelector('.display-info');
 const displayInfoUI = document.querySelector('.display-info');
 const searchInput = document.querySelector('#search');
+const panelTabsBtn = document.querySelector('.panel-tabs')
 
 
 class PhoneBook{
@@ -13,6 +14,7 @@ class PhoneBook{
         this.name = name;
         this.phone = phone;
         this.email = email;
+        this.favorite = false;
     }
 }
 
@@ -25,6 +27,7 @@ class PhoneBookUI{
             <div class="card">
                 <div class="card-content">
                     <div class="media-content">
+                        <p><i class="fas fa-star"></i></p>
                         <p class="title is-5">${phoneBook.name}</p>
                         <p class="subtitle">
                             <span>
@@ -78,11 +81,12 @@ class PhoneBookUI{
     // Get targer from display-info UI
     static getTargetContactUI(element){
         try{
+            const mediaContent = element.parentElement.parentElement.previousElementSibling.childNodes[1];
             // Get Name, Phone, email
-            const phoneString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
-            const emailString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
-            const name = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].textContent;// GEt Full Name From Targeted Contact Info
-            const id = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+            const phoneString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
+            const emailString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
+            const name = mediaContent.childNodes[3].textContent;// GEt Full Name From Targeted Contact Info
+            const id = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.nextElementSibling.textContent;
 
             // Remove All White Space From String
             const removeSpace = (text) => text.replace(/\s+/g, '');
@@ -130,6 +134,30 @@ class PhoneBookUI{
         //console.log(searchString);
     }
 
+    // Add Contact to Favorite List
+    static favoriteUI(event){
+        const id = event.target.parentElement.nextElementSibling.nextElementSibling.childNodes[7].textContent;
+        Store.addFavoriteLocalStore(id);
+        event.target.classList.toggle('favorite');
+    }
+
+    // View Favorite
+    static favoriteListUI(event){
+        const starBtn = document.querySelectorAll('.fa-star');
+        starBtn.forEach((star) => {
+            if(star.classList.contains('favorite') === false && event.target.id === 'favorite-btn'){
+                star.parentElement.parentElement.parentElement.parentElement.parentElement.classList.add('display-none');
+                event.target.classList = 'is-active';
+                event.target.previousElementSibling.classList.remove('is-active');
+            }
+
+            else if(event.target.id === 'all-btn'){
+                star.parentElement.parentElement.parentElement.parentElement.parentElement.classList.remove('display-none');
+                event.target.classList = 'is-active';
+                event.target.nextElementSibling.classList.remove('is-active');
+            }
+        });
+    }
     // Update Contact Info From Contact List
     static updatePhoneBookUI(element, textObj){
         // Get Element Column of Targeted Phone Number
@@ -195,6 +223,7 @@ class PhoneBookUI{
                 <div class="card">
                     <div class="card-content">
                         <div class="media-content">
+                            <p><i class="fas fa-star"></i></p>
                             <p class="title is-5">${updateContactInfo.name}</p>
                             <p class="subtitle">
                                 <span>
@@ -220,6 +249,9 @@ class PhoneBookUI{
             displayInfoUI.childNodes.forEach((e) => {
                 e.childNodes[1] !== undefined ? e.childNodes[1].classList.remove('display-info-disabled'): '';
             });
+
+            // Display Update Success message
+            PhoneBookUI.showMessage('Phone number has been updated!','is-primary');
 
             e.preventDefault();
         })
@@ -260,6 +292,31 @@ class Store{
         localStorage.setItem('phoneBook', JSON.stringify(phoneBook));        
     }
 
+    // Add To Favorite List In Local Store
+    static addFavoriteLocalStore(id){
+        let phoneBook = Store.getPhoneBook();
+        
+        // Set favorite true if it was false, and make fals if it was true
+        phoneBook.forEach((val) => {
+            if(String(val.id) === id ){
+                val.favorite ? val.favorite = false : val.favorite = true;
+            }
+        });
+
+        localStorage.setItem('phoneBook', JSON.stringify(phoneBook));
+    }
+
+    // Make The Star Orange If Favorite True
+    static is_favorite(id,star){
+        let phoneBook = Store.getPhoneBook();
+        
+        phoneBook.forEach((val) => {
+            if(String(val.id) === id ){
+                val.favorite ? star.classList.add('favorite') : star.classList.remove('favorite');
+            }
+        });
+    }
+
     // Update Contact Info in Local Sotre
     static updateContactLocalStore(contactInfo){
         let phoneBook = Store.getPhoneBook();
@@ -291,6 +348,14 @@ class Store{
 
 // Show Contact List When Page Is load in Screen
 document.addEventListener('DOMContentLoaded', Store.displayPhoneBook());
+
+window.addEventListener("load", () => {
+    const starBtn = document.querySelectorAll('.fa-star');
+    starBtn.forEach((star) => {
+        const id = star.parentElement.nextElementSibling.nextElementSibling.childNodes[7].textContent
+        Store.is_favorite(id, star);
+    });
+});
 
 // Close Button Event Listener
 closeBtn.addEventListener('click', (e) => {
@@ -333,6 +398,15 @@ addContactForm.addEventListener('submit',(e) => {
 
 // Search Contact from list
 searchInput.addEventListener('keyup', PhoneBookUI.searchUI);
+
+// Add To Faverate
+const starBtn = document.querySelectorAll('.fa-star');
+starBtn.forEach((star) => {
+    star.addEventListener('click',PhoneBookUI.favoriteUI);
+});
+
+// Add Event Listener in favoriteBtn
+panelTabsBtn.addEventListener('click',PhoneBookUI.favoriteListUI);
 
 // Delate Or Update Contact From Contact List
 contactList.addEventListener('click', (e) => {
