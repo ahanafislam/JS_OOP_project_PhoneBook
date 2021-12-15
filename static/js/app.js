@@ -7,7 +7,8 @@ const displayInfoUI = document.querySelector('.display-info');
 
 
 class PhoneBook{
-    constructor(name, phone, email){
+    constructor(name, phone, email, id = Math.floor(new Date())){
+        this.id = id;
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -32,6 +33,7 @@ class PhoneBookUI{
                             <span>
                                 <i class="fas fa-envelope-square mx-2"></i>${phoneBook.email}
                             </span>
+                            <span hidden>${phoneBook.id}</span>
                         </p>
                     </div>
                 </div>
@@ -79,6 +81,7 @@ class PhoneBookUI{
             const phoneString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
             const emailString = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
             const name = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].textContent;// GEt Full Name From Targeted Contact Info
+            const id = element.parentElement.parentElement.previousElementSibling.childNodes[1].childNodes[1].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.nextElementSibling.textContent;
 
             // Remove All White Space From String
             const removeSpace = (text) => text.replace(/\s+/g, '');
@@ -97,14 +100,14 @@ class PhoneBookUI{
             }
             // Update Contact Info From Contact List
             else if(element.classList.contains('fa-edit')){
-                const textObj = new PhoneBook(name, phoneNumber, emailAddress);
+                const textObj = new PhoneBook(name, phoneNumber, emailAddress, id);
                 // Call mathod for update Contact info
                 PhoneBookUI.updatePhoneBookUI(element, textObj);
             }
         }
 
         // Do nothing
-        catch{
+        catch(error){
             //console.log(error);
         }
     }
@@ -125,7 +128,7 @@ class PhoneBookUI{
                     <p><i class="fas fa-edit mx-2"></i>Edit Contact Info</p>
                     <button class="cancel-btn delete is-small" aria-label="delete"></button>
                 </div>
-                <form id="add-contact-form">
+                <form id="update-contact-form">
                     <div class="card-content">
                         <div class="media-content">
                             <p class="title is-5"><input class="input is-small" id="full-name-update" type="text" value="${textObj.name}"></p>
@@ -137,6 +140,7 @@ class PhoneBookUI{
                                 <span>
                                     <input class="input is-small" id="email-address-update" type="email" value="${textObj.email}">
                                 </span>
+                                <input type="hidden" id="contact-id" value="${textObj.id}">
                             </p>
                         </div>
                     </div>
@@ -149,18 +153,60 @@ class PhoneBookUI{
             </div>
         `;
 
-        // For Close Edit Contact Info Form
+        // Close Edit Contact Info Form
         const cancelBtn = document.querySelector('.cancel-btn');
         cancelBtn.addEventListener('click', (e) => {
             e.target.parentElement.parentElement.remove();
             phoneBookColumn.childNodes[1].toggleAttribute('hidden');
             displayInfoUI.childNodes.forEach((e) => {
                 e.childNodes[1] !== undefined ? e.childNodes[1].classList.toggle('display-info-disabled'): '';
-                console.log(e.childNodes[1]);
             });
         })
+
+        // Update Value In UI
+        const updateContactForm = document.querySelector('#update-contact-form');
+        updateContactForm.addEventListener('submit', (e) => {
+            const updateName = document.querySelector('#full-name-update').value;
+            const updatePhone = document.querySelector('#phone-number-update').value;
+            const updateEmail = document.querySelector('#email-address-update').value;
+            const contactId = document.querySelector('#contact-id').value;
+
+            const updateContactInfo = new PhoneBook(updateName, updatePhone, updateEmail, contactId)
+
+            phoneBookColumn.innerHTML = `
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media-content">
+                            <p class="title is-5">${updateContactInfo.name}</p>
+                            <p class="subtitle">
+                                <span>
+                                    <i class="fas fa-mobile-alt mx-2"></i>${updateContactInfo.phone}
+                                </span>
+                                <br>
+                                <span>
+                                    <i class="fas fa-envelope-square mx-2"></i>${updateContactInfo.email}
+                                </span>
+                                <span hidden>${updateContactInfo.id}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <a href="#" class="card-footer-item edit"><i class="fas fa-edit fa-gradient"></i></a>
+                        <a href="#" class="card-footer-item delate"><i class="fas fa-trash-alt fa-gradient"></i></a>
+                    </footer>
+                </div>
+            `;
+            // Save Updat in Local Store
+            Store.updateContactLocalStore(updateContactInfo);
+            // Remove display-info-disabled class
+            displayInfoUI.childNodes.forEach((e) => {
+                e.childNodes[1] !== undefined ? e.childNodes[1].classList.remove('display-info-disabled'): '';
+            });
+
+            e.preventDefault();
+        })
         //console.log(phoneBookColumn);
-        console.table(textObj);
+        //console.table(textObj);
     }
 }
 
@@ -194,6 +240,21 @@ class Store{
         phoneBook.push(contactInfo);
 
         localStorage.setItem('phoneBook', JSON.stringify(phoneBook));        
+    }
+
+    // Update Contact Info in Local Sotre
+    static updateContactLocalStore(contactInfo){
+        let phoneBook = Store.getPhoneBook();
+        
+        phoneBook.forEach((val) => {
+            if(String(val.id) === String(contactInfo.id)){
+                val.name = contactInfo.name;
+                val.phone = contactInfo.phone;
+                val.email = contactInfo.email;
+            }
+        });
+
+        localStorage.setItem('phoneBook', JSON.stringify(phoneBook));
     }
 
     // Delate ContactInfo From Local Store
@@ -248,12 +309,12 @@ addContactForm.addEventListener('submit',(e) => {
         PhoneBookUI.showMessage('Phone number has been saved!','is-primary');
     }
     e.preventDefault();
-    console.log(e.target);
-    console.table(phoneBook);
+    // console.log(e.target);
+    // console.table(phoneBook);
 });
 
-// Delate Contact From Contact List
+// Delate Or Update Contact From Contact List
 contactList.addEventListener('click', (e) => {
-    // Remove From UI And Local Store Or Update
+    // Remove Or Update From UI And Local Store Or Update
     PhoneBookUI.getTargetContactUI(e.target);
 });
