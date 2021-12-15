@@ -2,7 +2,6 @@ const addContactBtn = document.querySelector('.add-contact-info-btn');
 const addContactForm = document.querySelector('#add-contact-form');
 const saveInfoView = document.querySelector('#save-info-view');
 const closeBtn = document.querySelector('.close-btn');
-const contactList = document.querySelector('.display-info');
 const displayInfoUI = document.querySelector('.display-info');
 const searchInput = document.querySelector('#search');
 const panelTabsBtn = document.querySelector('.panel-tabs')
@@ -81,33 +80,38 @@ class PhoneBookUI{
     // Get targer from display-info UI
     static getTargetContactUI(element){
         try{
-            const mediaContent = element.parentElement.parentElement.previousElementSibling.childNodes[1];
-            // Get Name, Phone, email
-            const phoneString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
-            const emailString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
-            const name = mediaContent.childNodes[3].textContent;// GEt Full Name From Targeted Contact Info
-            const id = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.nextElementSibling.textContent;
-
-            // Remove All White Space From String
-            const removeSpace = (text) => text.replace(/\s+/g, '');
-
-            const phoneNumber = removeSpace(phoneString);
-            const emailAddress = removeSpace(emailString);
-
-            // Delate Contact Info
-            if(element.classList.contains('fa-trash-alt')){
-                // Remove Contact Info from UI
-                element.parentElement.parentElement.parentElement.parentElement.remove();
-                // Delate Contact Info From Local Store
-                Store.delateFromLocalStore(id);
-                // Display Message
-                PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
+            if(element.classList.contains('fa-star')){
+                PhoneBookUI.favoriteUI(element);
             }
-            // Update Contact Info From Contact List
-            else if(element.classList.contains('fa-edit')){
-                const textObj = new PhoneBook(name, phoneNumber, emailAddress, id);
-                // Call mathod for update Contact info
-                PhoneBookUI.updatePhoneBookUI(element, textObj);
+            else{
+                const mediaContent = element.parentElement.parentElement.previousElementSibling.childNodes[1];
+                // Get Name, Phone, email
+                const phoneString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].textContent;// GEt Phone Number From Targeted Contact Info 
+                const emailString = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.lastChild.textContent;// GEt Email Address From Targeted Contact Info 
+                const name = mediaContent.childNodes[3].textContent;// GEt Full Name From Targeted Contact Info
+                const id = mediaContent.childNodes[3].nextElementSibling.childNodes[1].nextElementSibling.nextElementSibling.nextElementSibling.textContent;
+    
+                // Remove All White Space From String
+                const removeSpace = (text) => text.replace(/\s+/g, '');
+    
+                const phoneNumber = removeSpace(phoneString);
+                const emailAddress = removeSpace(emailString);
+    
+                // Delate Contact Info
+                if(element.classList.contains('fa-trash-alt')){
+                    // Remove Contact Info from UI
+                    element.parentElement.parentElement.parentElement.parentElement.remove();
+                    // Delate Contact Info From Local Store
+                    Store.delateFromLocalStore(id);
+                    // Display Message
+                    PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
+                }
+                // Update Contact Info From Contact List
+                else if(element.classList.contains('fa-edit')){
+                    const textObj = new PhoneBook(name, phoneNumber, emailAddress, id);
+                    // Call mathod for update Contact info
+                    PhoneBookUI.updatePhoneBookUI(element, textObj);
+                }
             }
         }
 
@@ -136,9 +140,9 @@ class PhoneBookUI{
 
     // Add Contact to Favorite List
     static favoriteUI(event){
-        const id = event.target.parentElement.nextElementSibling.nextElementSibling.childNodes[7].textContent;
+        const id = event.parentElement.nextElementSibling.nextElementSibling.childNodes[7].textContent;
         Store.addFavoriteLocalStore(id);
-        event.target.classList.toggle('favorite');
+        event.classList.toggle('favorite');
     }
 
     // View Favorite
@@ -399,17 +403,11 @@ addContactForm.addEventListener('submit',(e) => {
 // Search Contact from list
 searchInput.addEventListener('keyup', PhoneBookUI.searchUI);
 
-// Add To Faverate
-const starBtn = document.querySelectorAll('.fa-star');
-starBtn.forEach((star) => {
-    star.addEventListener('click',PhoneBookUI.favoriteUI);
-});
-
 // Add Event Listener in favoriteBtn
 panelTabsBtn.addEventListener('click',PhoneBookUI.favoriteListUI);
 
-// Delate Or Update Contact From Contact List
-contactList.addEventListener('click', (e) => {
+// Delate Or Update Or Add Favorite Contact From Contact List
+displayInfoUI.addEventListener('click', (e) => {
     // Remove Or Update From UI And Local Store Or Update
     PhoneBookUI.getTargetContactUI(e.target);
 });
