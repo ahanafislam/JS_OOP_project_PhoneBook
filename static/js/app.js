@@ -4,6 +4,7 @@ const saveInfoView = document.querySelector('#save-info-view');
 const closeBtn = document.querySelector('.close-btn');
 const contactList = document.querySelector('.display-info');
 const displayInfoUI = document.querySelector('.display-info');
+const searchInput = document.querySelector('#search');
 
 
 class PhoneBook{
@@ -112,6 +113,23 @@ class PhoneBookUI{
         }
     }
 
+    // Surch Contact Info from Contact List By Name
+    static searchUI(event){
+        const searchString = event.target.value.toLowerCase();
+        const contactListItems = document.querySelectorAll('.column');
+
+        contactListItems.forEach((item) => {
+            const contactName = item.childNodes[1].childNodes[1].childNodes[1].childNodes[1].textContent.toLowerCase();
+            if(contactName.indexOf(searchString) !== -1){
+                item.classList.remove('display-none');
+            }
+            else{
+                item.classList.add('display-none');
+            }
+        });
+        //console.log(searchString);
+    }
+
     // Update Contact Info From Contact List
     static updatePhoneBookUI(element, textObj){
         // Get Element Column of Targeted Phone Number
@@ -196,7 +214,7 @@ class PhoneBookUI{
                     </footer>
                 </div>
             `;
-            // Save Updat in Local Store
+            // Save Update in Local Store
             Store.updateContactLocalStore(updateContactInfo);
             // Remove display-info-disabled class
             displayInfoUI.childNodes.forEach((e) => {
@@ -312,6 +330,9 @@ addContactForm.addEventListener('submit',(e) => {
     // console.log(e.target);
     // console.table(phoneBook);
 });
+
+// Search Contact from list
+searchInput.addEventListener('keyup', PhoneBookUI.searchUI);
 
 // Delate Or Update Contact From Contact List
 contactList.addEventListener('click', (e) => {
