@@ -99,7 +99,7 @@ class PhoneBookUI{
                 // Remove Contact Info from UI
                 element.parentElement.parentElement.parentElement.parentElement.remove();
                 // Delate Contact Info From Local Store
-                Store.delateFromLocalStore(phoneNumber);
+                Store.delateFromLocalStore(id);
                 // Display Message
                 PhoneBookUI.showMessage(`Phone Number Hasbeen Delated!`,'is-info');
             }
@@ -333,11 +333,11 @@ class Store{
     }
 
     // Delate ContactInfo From Local Store
-    static delateFromLocalStore(phoneNumber){
+    static delateFromLocalStore(id){
         let phoneBook = Store.getPhoneBook();
 
         phoneBook.forEach((val, index) => {
-            if(String(val.phone) === String(phoneNumber)){
+            if(String(val.id) === String(id)){
                 phoneBook.splice(index,1);
             }
         });
