@@ -75,7 +75,7 @@ class PhoneBookUI{
         // Remove Aleart After 3 sec
         setTimeout(() => {
             document.querySelector('.meassage-alert').remove()
-        }, 3000);
+        }, 4000);
     }
     // Get targer from display-info UI
     static getTargetContactUI(element){
@@ -127,7 +127,7 @@ class PhoneBookUI{
         const contactListItems = document.querySelectorAll('.column');
 
         contactListItems.forEach((item) => {
-            const contactName = item.childNodes[1].childNodes[1].childNodes[1].childNodes[1].textContent.toLowerCase();
+            const contactName = item.childNodes[1].childNodes[1].childNodes[1].childNodes[3].textContent.toLowerCase();
             if(contactName.indexOf(searchString) !== -1){
                 item.classList.remove('display-none');
             }
@@ -282,9 +282,14 @@ class Store{
     static displayPhoneBook(){
         let phoneBook = Store.getPhoneBook();
 
-        phoneBook.forEach((val) => {
-            PhoneBookUI.saveContactInfoUI(val);
-        });
+        if(phoneBook.length !== 0){
+            phoneBook.forEach((val) => {
+                PhoneBookUI.saveContactInfoUI(val);
+            });
+        }
+        else{
+            PhoneBookUI.showMessage('Your Phone Book Is Empty Now. Click The Plus Button To Add a new phone number','is-danger');
+        }
     }
 
     // Save Contact Info in local Store
